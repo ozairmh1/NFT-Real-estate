@@ -3,7 +3,7 @@
 # 🏠 Cryptic Estate
 ### Fractional Real Estate Platform Powered by Blockchain
 
-<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHBtOGM4dXJ6cGx1bzM1dDh4YmM4ZXQ4NjB4aTRxMDFpb3lydnN5dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7TKtnuHOHHUjR38Y/giphy.gif" width="50%" />
+<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHBtOGM4dXJ6cGx1bzM1dDh4YmM4ZXQ4NjB4aTRxMDFpb3lydnN5dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7TKtnuHOHHUjR38Y/giphy.gif" width="30%" />
 
 # 🚀 Live Demo
 🌐 https://cryptic-estate.netlify.app/
