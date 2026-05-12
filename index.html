@@ -1,249 +1,665 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cryptic Estate | Fractional Real Estate on Blockchain</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cryptic Estate | Fractional Real Estate on Blockchain</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+:root {
+    --black: #080808;
+    --dark: #111111;
+    --dark2: #1a1a1a;
+    --dark3: #242424;
+    --gold: #C9A258;
+    --gold-light: #E2C07A;
+    --gold-dim: rgba(201,162,88,0.15);
+    --white: #F5F0E8;
+    --muted: #8A8A8A;
+    --border: rgba(201,162,88,0.2);
+    --glass: rgba(255,255,255,0.03);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--dark);}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px;}
+
+/* ── DECORATIVE GRID OVERLAY ── */
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,162,88,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,162,88,0.03) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;z-index:0;}
+
+/* ── NAVBAR ── */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:20px 60px;transition:all .4s ease;border-bottom:1px solid transparent;}
+.navbar.scrolled{background:rgba(8,8,8,0.95);backdrop-filter:blur(20px);border-bottom-color:var(--border);}
+.logo{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;letter-spacing:3px;color:var(--gold);display:flex;align-items:center;gap:10px;text-transform:uppercase;cursor:pointer;}
+.logo-icon{font-size:1.1rem;color:var(--gold);}
+nav{display:flex;gap:36px;}
+nav a{color:var(--muted);text-decoration:none;font-size:.8rem;letter-spacing:2px;text-transform:uppercase;transition:color .3s;position:relative;}
+nav a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--gold);transition:width .3s;}
+nav a:hover{color:var(--gold);}
+nav a:hover::after{width:100%;}
+.auth-buttons{display:flex;gap:12px;align-items:center;}
+.btn{cursor:pointer;border:none;font-family:'DM Sans',sans-serif;font-weight:400;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;}
+.btn-login{background:transparent;color:var(--muted);font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;padding:10px 20px;border:1px solid var(--dark3);}
+.btn-login:hover{color:var(--white);border-color:var(--muted);}
+.btn-primary{background:var(--gold);color:var(--black);font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;padding:12px 28px;font-weight:500;}
+.btn-primary:hover{background:var(--gold-light);transform:translateY(-1px);}
+.btn-secondary{background:transparent;color:var(--gold);font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;padding:12px 28px;border:1px solid var(--gold);}
+.btn-secondary:hover{background:var(--gold-dim);}
+.user-pfp{position:relative;cursor:pointer;}
+.user-pfp img{width:40px;height:40px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;}
+.pfp-dropdown{display:none;position:absolute;right:0;top:50px;background:var(--dark2);border:1px solid var(--border);padding:8px 0;min-width:140px;}
+.pfp-dropdown a{display:block;padding:10px 20px;color:var(--muted);text-decoration:none;font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;transition:color .3s;}
+.pfp-dropdown a:hover{color:var(--gold);}
+.user-pfp:hover .pfp-dropdown{display:block;}
+
+/* ── PAGE ── */
+.page{display:none;position:relative;z-index:1;}
+.page.active{display:flex;}
+
+/* ── HERO / LOGIN PAGE ── */
+#login-page{min-height:100vh;display:flex;align-items:stretch;}
+.hero-half{flex:1;display:flex;flex-direction:column;justify-content:center;padding:140px 60px 80px;position:relative;overflow:hidden;}
+.hero-half::after{content:'';position:absolute;right:0;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--gold),transparent);}
+.hero-eyebrow{font-size:.7rem;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:28px;display:flex;align-items:center;gap:14px;}
+.hero-eyebrow::before{content:'';width:40px;height:1px;background:var(--gold);}
+.hero-half h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,4.5vw,4.2rem);font-weight:300;line-height:1.15;letter-spacing:-0.5px;margin-bottom:28px;color:var(--white);}
+.hero-half h1 em{font-style:italic;color:var(--gold);}
+.hero-half p{font-size:.95rem;line-height:1.8;color:var(--muted);max-width:420px;margin-bottom:48px;}
+.hero-stats{display:flex;gap:48px;margin-top:60px;}
+.stat{border-left:1px solid var(--border);padding-left:20px;}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--gold);}
+.stat-label{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+/* Hero BG image */
+.hero-bg{position:absolute;inset:0;z-index:-1;}
+.hero-bg img{width:100%;height:100%;object-fit:cover;opacity:.12;filter:grayscale(40%);}
+.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--black) 30%,transparent);}
+
+/* Login Form */
+.login-half{flex:0 0 480px;display:flex;align-items:center;justify-content:center;padding:100px 60px 60px;background:linear-gradient(135deg,rgba(201,162,88,0.04) 0%,transparent 60%);}
+.login-card{width:100%;max-width:360px;}
+.login-card h2{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:400;margin-bottom:8px;}
+.login-card .subtitle{font-size:.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:40px;}
+.form-group{margin-bottom:16px;position:relative;}
+.form-group input{width:100%;background:var(--dark2);border:1px solid var(--dark3);color:var(--white);padding:14px 18px;font-family:'DM Sans',sans-serif;font-size:.9rem;transition:border-color .3s;outline:none;}
+.form-group input:focus{border-color:var(--gold);}
+.form-group input::placeholder{color:var(--muted);font-size:.85rem;}
+.divider{display:flex;align-items:center;gap:16px;margin:24px 0;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--dark3);}
+.forgot-link,.signup-link,.login-link{font-size:.8rem;color:var(--muted);text-decoration:none;display:block;text-align:center;margin-top:12px;}
+.forgot-link:hover,.signup-link a:hover,.login-link a:hover{color:var(--gold);}
+.signup-link a,.login-link a{color:var(--gold);text-decoration:none;}
+.signup-link{margin-top:20px;}
+
+/* ── SIGNUP PAGE ── */
+#signup-page{min-height:100vh;justify-content:center;align-items:center;padding-top:80px;}
+.signup-card{width:100%;max-width:400px;padding:60px 48px;background:var(--dark2);border:1px solid var(--border);}
+.signup-card h2{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:400;margin-bottom:8px;}
+.signup-card .subtitle{font-size:.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:36px;}
+
+/* ── LISTING PAGE ── */
+#listing-page{display:none;flex-direction:column;padding-top:80px;min-height:100vh;}
+.listing-header{padding:48px 60px 0;border-bottom:1px solid var(--border);margin-bottom:0;}
+.listing-header h2{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;margin-bottom:4px;}
+.listing-header .subtitle{font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:32px;}
+.main-content-grid{display:grid;grid-template-columns:260px 1fr;flex:1;}
+.filter-sidebar{padding:40px 32px;border-right:1px solid var(--border);position:sticky;top:80px;height:calc(100vh - 80px);overflow-y:auto;}
+.filter-sidebar h2{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;letter-spacing:2px;text-transform:uppercase;margin-bottom:32px;color:var(--gold);display:flex;align-items:center;gap:10px;}
+.filter-group{margin-bottom:28px;}
+.filter-group label{display:block;font-size:.7rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.filter-input{width:100%;background:var(--dark2);border:1px solid var(--dark3);color:var(--white);padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none;transition:border-color .3s;}
+.filter-input:focus{border-color:var(--gold);}
+.filter-input option{background:var(--dark2);}
+input[type="range"]{-webkit-appearance:none;width:100%;height:2px;background:var(--dark3);outline:none;margin:10px 0;}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--gold);border-radius:50%;cursor:pointer;}
+#price-value{font-size:.8rem;color:var(--gold);margin-top:6px;display:block;}
+.btn-reset{width:100%;background:transparent;border:1px solid var(--dark3);color:var(--muted);padding:11px;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-top:8px;}
+.btn-reset:hover{border-color:var(--gold);color:var(--gold);}
+.property-list-container{padding:40px 48px;}
+.property-list-container>h2{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;margin-bottom:32px;color:var(--white);}
+.property-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;}
+
+/* Property Card */
+.property-card{background:var(--dark2);border:1px solid var(--dark3);overflow:hidden;transition:all .4s ease;position:relative;}
+.property-card:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 24px 60px rgba(0,0,0,0.5);}
+.property-card-image{height:220px;overflow:hidden;position:relative;}
+.property-card-image img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease;filter:brightness(.85);}
+.property-card:hover .property-card-image img{transform:scale(1.05);}
+.property-type-badge{position:absolute;top:16px;left:16px;background:var(--black);color:var(--gold);font-size:.65rem;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;border:1px solid var(--border);}
+.property-info{padding:24px;}
+.property-info h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;margin-bottom:6px;}
+.property-meta{font-size:.75rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+.price-tag{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--gold);display:block;margin-bottom:16px;}
+.availability-bar{height:2px;background:var(--dark3);margin-bottom:10px;position:relative;overflow:hidden;}
+.sold-progress{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));transition:width 1s ease;}
+.availability-text{display:flex;justify-content:space-between;font-size:.72rem;letter-spacing:1px;color:var(--muted);margin-bottom:20px;}
+.availability-text span:first-child{color:var(--gold);}
+.purchase-btn{width:100%;padding:13px;font-size:.75rem;letter-spacing:2px;}
+
+/* ── PURCHASE PAGE ── */
+#purchase-page{display:none;flex-direction:column;padding-top:80px;min-height:100vh;}
+.purchase-container{padding:48px 60px;max-width:1200px;margin:0 auto;width:100%;}
+.btn-back{background:transparent;border:1px solid var(--dark3);color:var(--muted);padding:10px 20px;font-size:.75rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:40px;}
+.btn-back:hover{border-color:var(--gold);color:var(--gold);}
+.property-purchase-grid{display:grid;grid-template-columns:1fr 420px;gap:48px;align-items:start;}
+.image-gallery .main-image img{width:100%;height:400px;object-fit:cover;display:block;}
+.thumbnail-images{display:flex;gap:12px;margin-top:12px;}
+.thumbnail{width:80px;height:60px;object-fit:cover;cursor:pointer;opacity:.5;transition:opacity .3s;border:1px solid transparent;}
+.thumbnail.active,.thumbnail:hover{opacity:1;border-color:var(--gold);}
+#property-details-content{margin-top:28px;}
+#property-details-content h2{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;margin-bottom:8px;}
+#property-details-content .price-tag{font-size:1.4rem;margin-bottom:20px;}
+#property-details-content p{font-size:.85rem;color:var(--muted);line-height:2;display:flex;align-items:center;gap:10px;}
+#property-details-content p strong{color:var(--white);min-width:90px;}
+#property-details-content p i{color:var(--gold);width:14px;}
+
+/* Purchase Panel */
+.purchase-section{background:var(--dark2);border:1px solid var(--border);padding:36px;}
+.purchase-section h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--dark3);}
+.payment-options h4{font-size:.7rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+.option{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--dark3);cursor:pointer;}
+.option input[type="radio"]{accent-color:var(--gold);width:14px;height:14px;}
+.option label{font-size:.82rem;letter-spacing:.5px;cursor:pointer;color:var(--muted);display:flex;align-items:center;gap:8px;}
+.option label i{color:var(--gold);width:16px;}
+.option input:checked+label{color:var(--white);}
+.payment-details{display:none;padding:16px 0;border-bottom:1px solid var(--dark3);}
+.payment-details input[type="text"],.payment-details input[type="number"]{width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);color:var(--white);padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none;margin-bottom:12px;}
+.payment-details input:focus{border-color:var(--gold);}
+.payment-details label{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;}
+.payment-details span{font-size:.8rem;color:var(--gold);display:block;margin-top:6px;}
+.payment-details p{font-size:.82rem;color:var(--muted);margin-bottom:10px;}
+.payment-details p span{color:var(--gold-light);}
+.token-purchase-summary{margin-top:24px;padding:20px;background:var(--black);border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.token-purchase-summary h4{font-size:.7rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);}
+#usd-to-pay{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--gold);}
+.btn-purchase{width:100%;padding:16px;font-size:.8rem;letter-spacing:2px;margin-top:16px;}
+
+/* ── VERIFY PAGE ── */
+#verify-token-page{display:none;min-height:100vh;justify-content:center;align-items:center;flex-direction:column;padding-top:80px;}
+.verify-container{max-width:520px;width:100%;text-align:center;padding:60px 48px;background:var(--dark2);border:1px solid var(--border);}
+.verify-container h2{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;margin-bottom:12px;}
+.verify-container h2 i{color:var(--gold);}
+.verify-container p{font-size:.85rem;color:var(--muted);line-height:1.8;margin-bottom:28px;}
+.verify-container input{width:100%;background:var(--dark3);border:1px solid var(--dark3);color:var(--white);padding:14px 18px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;margin-bottom:16px;text-align:center;}
+.verify-container input:focus{border-color:var(--gold);}
+.result-box{margin-top:24px;padding:20px;background:var(--dark3);border:1px solid var(--dark3);text-align:left;font-size:.85rem;line-height:2;}
+.result-box p{color:var(--muted);}
+.result-box strong{color:var(--white);}
+
+/* ── WALLET PAGE ── */
+#user-wallet-page{display:none;flex-direction:column;padding-top:80px;min-height:100vh;}
+.wallet-container{padding:60px;max-width:1000px;margin:0 auto;width:100%;}
+.wallet-container>h2{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;margin-bottom:8px;}
+.wallet-eyebrow{font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:40px;}
+.wallet-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.wallet-box{background:var(--dark2);border:1px solid var(--dark3);padding:28px 24px;transition:border-color .3s;}
+.wallet-box:hover{border-color:var(--border);}
+.wallet-box h3{font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.wallet-box p{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;color:var(--white);}
+.wallet-box.full-width{grid-column:1/-1;}
+.wallet-box.full-width p{font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:300;color:var(--muted);}
+#add-funds-btn{padding:14px 36px;}
+
+/* ── MODAL ── */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:2000;justify-content:center;align-items:center;backdrop-filter:blur(8px);}
+.modal-content{background:var(--dark2);border:1px solid var(--border);padding:48px;width:100%;max-width:400px;position:relative;}
+.modal-content h2{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;margin-bottom:28px;}
+.modal-content input{width:100%;background:var(--dark3);border:1px solid var(--dark3);color:var(--white);padding:14px 18px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;margin-bottom:16px;}
+.modal-content input:focus{border-color:var(--gold);}
+.close-btn{position:absolute;top:20px;right:24px;background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;line-height:1;transition:color .3s;}
+.close-btn:hover{color:var(--gold);}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.fade-in-up{animation:fadeUp .8s ease both;}
+.delay-1{animation-delay:.15s;}
+.delay-2{animation-delay:.3s;}
+.delay-3{animation-delay:.45s;}
+.delay-4{animation-delay:.6s;}
+
+/* ── UTILITY ── */
+.page-show{display:flex !important;}
+.page-block{display:block !important;}
+.page-grid{display:grid !important;}
+</style>
 </head>
 <body>
 
-    <header class="navbar">
-        <div class="logo">
-            <i class="fas fa-cubes logo-icon"></i> Cryptic Estate
-        </div>
-        <nav>
-            <a href="#how-it-works">How It Works</a>
-            <a href="#properties" id="nav-properties">Properties</a>
-            <a href="#faqs">FAQs</a>
-            <a href="#user-wallet" id="nav-user-wallet" style="display: none;">My Wallet</a>
-        </nav>
-        <div class="auth-buttons" id="auth-buttons">
-            <button class="btn btn-login" id="login-btn">Login</button>
-            <button class="btn btn-primary" id="signup-btn">Sign Up</button>
-        </div>
-        <div class="user-pfp" id="user-pfp" style="display: none;">
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D" alt="User PFP">
-            <div class="pfp-dropdown" id="pfp-dropdown">
-                <a href="#" id="logout-btn">Log Out</a>
-            </div>
-        </div>
-    </header>
-
-    <main id="login-page" class="page active" style="display: flex;">
-        <div class="hero-content">
-            <h1 class="fade-in-up">Fractional Real Estate investment Secured by Blockchain.</h1>
-            <p class="fade-in-up delay-1">Own a piece of premium property starting from just 1%. Verifiable, Liquid, and Accessible.</p>
-            <button class="btn btn-hero btn-primary fade-in-up delay-2" id="explore-properties-btn">Explore Properties</button>
-        </div>
-
-        <div class="login-container fade-in-up delay-3">
-            <h2>Access Your Portfolio</h2>
-            <form id="login-form">
-                <input type="email" id="login-email" placeholder="Email Address" required>
-                <input type="password" id="login-password" placeholder="Password" required>
-                <button type="submit" class="btn btn-primary">Log In</button>
-                <a href="#" class="forgot-link">Forgot Password?</a>
-            </form>
-            <div class="divider">OR</div>
-            <button class="btn btn-secondary">Connect Wallet <i class="fas fa-wallet"></i></button>
-            <p class="signup-link">Don't have an account? <a href="#" id="create-account-link">Create one</a></p>
-        </div>
-    </main>
-
-    <main id="signup-page" class="page" style="display: none;">
-        <div class="signup-container">
-            <h2>Create Your Account</h2>
-            <form id="signup-form">
-                <input type="text" id="signup-name" placeholder="Full Name" required>
-                <input type="email" id="signup-email" placeholder="Email Address" required>
-                <input type="password" id="signup-password" placeholder="Password" required>
-                <button type="submit" class="btn btn-primary">Create Account</button>
-            </form>
-            <p class="login-link">Already have an account? <a href="#" id="login-link">Log In</a></p>
-        </div>
-    </main>
-
-    <main id="listing-page" class="page" style="display: none;">
-        <div class="main-content-grid">
-            
-            <aside class="filter-sidebar">
-                <h2><i class="fas fa-sliders-h"></i> Filters</h2>
-
-                <div class="filter-group">
-                    <label>Locality</label>
-                    <select id="locality-filter" class="filter-input">
-                        <option value="all">All Localities</option>
-                        <option value="Banjara hills">Banjara Hills</option>
-                        <option value="Attapur">Attapur</option>
-                        <option value="Saidabad">Saidabad</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label>Price Range (Total Property Value)</label>
-                    <input type="range" id="price-range-filter" min="10000" max="20000" step="1000" value="20000">
-                    <span id="price-value">$10,000 - $20,000+</span>
-                </div>
-
-                <div class="filter-group">
-                    <label>Min. Available Tokens/Coins</label>
-                    <input type="number" id="tokens-min-filter" class="filter-input" min="1" placeholder="Min. Tokens">
-                </div>
-
-                <button class="btn btn-reset" id="reset-filters-btn">Reset Filters</button>
-            </aside>
-
-            <section class="property-list-container">
-                <h2>Available Properties to Tokenize</h2>
-                <div class="property-grid" id="property-grid">
-                    </div>
-            </section>
-        </div>
-    </main>
-
-    <main id="verify-token-page" class="page" style="display: none; padding: 40px; text-align: center;">
-        <div class="verify-container">
-            <h2><i class="fas fa-check-circle"></i> Verify Token/Transaction</h2>
-            <p>Enter the Unique Transaction ID or Token Number to verify its status on the blockchain.</p>
-            <input type="text" id="verification-input" placeholder="Enter Transaction ID or Token Number">
-            <button class="btn btn-primary" id="verify-token-btn">Verify Token</button>
-            <div id="verification-result" class="result-box"></div>
-        </div>
-    </main>
-
-    <main id="purchase-page" class="page" style="display: none;">
-        <div class="purchase-container">
-            <button class="btn btn-back" id="back-to-listings-btn"><i class="fas fa-arrow-left"></i> Back to Listings</button>
-            <div class="property-purchase-grid">
-                <div class="property-details">
-                    <div class="image-gallery">
-                        <div class="main-image">
-                            <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Property Image 1" id="main-property-image">
-                        </div>
-                        <div class="thumbnail-images">
-                            <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Thumbnail 1" class="thumbnail active">
-                            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Thumbnail 2" class="thumbnail">
-                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Thumbnail 3" class="thumbnail">
-                        </div>
-                    </div>
-                    <div id="property-details-content">
-                        <!-- Property details will be injected here by JS -->
-                    </div>
-                </div>
-                <div class="purchase-section">
-                    <h3>Complete Your Purchase</h3>
-                    <div class="payment-options">
-                        <h4>Select Payment Method</h4>
-                        <div class="option">
-                            <input type="radio" id="wallet-payment" name="payment" value="wallet">
-                            <label for="wallet-payment"><i class="fas fa-wallet"></i> USD in Wallet</label>
-                        </div>
-                        <div id="wallet-payment-details" class="payment-details">
-                            <p>Available Balance: <span id="wallet-balance-display">$0.00</span></p>
-                            <label>Number of Tokens:</label>
-                            <input type="range" min="0" max="1000" value="0" class="token-slider" id="wallet-token-slider">
-                            <span id="wallet-token-amount-display">0 Tokens</span>
-                        </div>
-
-                        <div class="option">
-                            <input type="radio" id="upi" name="payment" value="upi">
-                            <label for="upi"><i class="fas fa-mobile-alt"></i> UPI</label>
-                        </div>
-                        <div id="upi-details" class="payment-details">
-                            <input type="text" placeholder="Enter UPI ID (e.g., yourname@bank)">
-                            <label>Number of Tokens:</label>
-                            <input type="range" min="0" max="1000" value="0" class="token-slider" id="upi-token-slider">
-                            <span id="upi-token-amount-display">0 Tokens</span>
-                        </div>
-
-                        <div class="option">
-                            <input type="radio" id="debit-card" name="payment" value="debit-card">
-                            <label for="debit-card"><i class="far fa-credit-card"></i> Debit Card</label>
-                        </div>
-                        <div id="debit-card-details" class="payment-details">
-                            <input type="text" placeholder="Card Number (12 Digits)">
-                            <input type="text" placeholder="Expiry Date (MM/YY)">
-                            <label>Number of Tokens:</label>
-                            <input type="range" min="0" max="1000" value="0" class="token-slider" id="debit-card-token-slider">
-                            <span id="debit-card-token-amount-display">0 Tokens</span>
-                        </div>
-
-                        <div class="option">
-                            <input type="radio" id="credit-card" name="payment" value="credit-card">
-                            <label for="credit-card"><i class="fas fa-credit-card"></i> Credit Card</label>
-                        </div>
-                        <div id="credit-card-details" class="payment-details">
-                            <input type="text" placeholder="Card Number (12 Digits)">
-                            <input type="text" placeholder="Expiry Date (MM/YY)">
-                            <label>Number of Tokens:</label>
-                            <input type="range" min="0" max="1000" value="0" class="token-slider" id="credit-card-token-slider">
-                            <span id="credit-card-token-amount-display">0 Tokens</span>
-                        </div>
-
-                        <div class="option">
-                            <input type="radio" id="nft" name="payment" value="nft">
-                            <label for="nft"><i class="fab fa-ethereum"></i> NFT Wallet (StarkNet)</label>
-                        </div>
-                        <div id="nft-details" class="payment-details">
-                            <label>StarkNet Coins ($0.25 each)</label>
-                            <input type="range" min="0" max="1000" value="0" class="starknet-slider" id="starknet-slider">
-                            <span id="starknet-amount">0 StarkNet</span>
-                        </div>
-                    </div>
-                    <div class="token-purchase-summary">
-                        <h4>You will pay:</h4>
-                        <span id="usd-to-pay">$0.00</span>
-                    </div>
-                    <button class="btn btn-primary btn-purchase" id="finalize-purchase-btn">Finalize Purchase</button>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <main id="user-wallet-page" class="page" style="display: none;">
-        <div class="wallet-container">
-            <h2>My Wallet</h2>
-            <div class="wallet-grid">
-                <div class="wallet-box">
-                    <h3>Tokens Available</h3>
-                    <p id="wallet-tokens">0 TKN</p>
-                </div>
-                <div class="wallet-box">
-                    <h3>USD in Wallet</h3>
-                    <p id="wallet-usd">$0.00</p>
-                </div>
-                <div class="wallet-box">
-                    <h3>Past Orders</h3>
-                    <p id="wallet-orders">0 Orders</p>
-                </div>
-                <div class="wallet-box">
-                    <h3>Profit</h3>
-                    <p id="wallet-profit">$0.00</p>
-                </div>
-                <div class="wallet-box full-width">
-                    <h3>Current Investments</h3>
-                    <p id="wallet-investments">Not invested yet</p>
-                </div>
-            </div>
-            <button class="btn btn-primary" id="add-funds-btn">Add Funds</button>
-        </div>
-    </main>
-
-    <div id="add-funds-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close-btn" id="close-modal-btn">&times;</span>
-            <h2>Add Funds to Your Wallet</h2>
-            <form id="add-funds-form">
-                <input type="number" id="add-funds-amount" placeholder="Amount in USD" required>
-                <button type="submit" class="btn btn-primary">Add</button>
-            </form>
+<!-- NAVBAR -->
+<header class="navbar" id="navbar">
+    <div class="logo" onclick="showPage('login-page')">
+        <i class="fas fa-cubes logo-icon"></i> Cryptic Estate
+    </div>
+    <nav>
+        <a href="#" id="nav-properties">Properties</a>
+        <a href="#" id="nav-verify">Verify Token</a>
+        <a href="#" id="nav-user-wallet" style="display:none;">My Wallet</a>
+    </nav>
+    <div class="auth-buttons" id="auth-buttons">
+        <button class="btn btn-login" id="login-btn">Login</button>
+        <button class="btn btn-primary" id="signup-btn">Sign Up</button>
+    </div>
+    <div class="user-pfp" id="user-pfp" style="display:none;">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=500&auto=format&fit=crop&q=60" alt="User">
+        <div class="pfp-dropdown" id="pfp-dropdown">
+            <a href="#" id="logout-btn">Log Out</a>
         </div>
     </div>
+</header>
 
+<!-- LOGIN PAGE -->
+<main id="login-page" class="page" style="display:flex;">
+    <div class="hero-half">
+        <div class="hero-bg">
+            <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?q=80&w=2096&auto=format&fit=crop" alt="">
+        </div>
+        <div class="hero-eyebrow fade-in-up">Blockchain Real Estate</div>
+        <h1 class="fade-in-up delay-1">Fractional Ownership,<br><em>Infinite</em> Potential.</h1>
+        <p class="fade-in-up delay-2">Own a verified piece of premium property starting from just 1%. Secured by blockchain, liquid and accessible to all.</p>
+        <button class="btn btn-primary fade-in-up delay-3" id="explore-properties-btn">Explore Properties &nbsp;→</button>
+        <div class="hero-stats fade-in-up delay-4">
+            <div class="stat"><div class="stat-num">3</div><div class="stat-label">Properties</div></div>
+            <div class="stat"><div class="stat-num">$45K</div><div class="stat-label">Total Value</div></div>
+            <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Blockchain Verified</div></div>
+        </div>
+    </div>
+    <div class="login-half fade-in-up delay-2">
+        <div class="login-card">
+            <h2>Access Portfolio</h2>
+            <div class="subtitle">Secure Login</div>
+            <form id="login-form">
+                <div class="form-group"><input type="email" id="login-email" placeholder="Email Address" required></div>
+                <div class="form-group"><input type="password" id="login-password" placeholder="Password" required></div>
+                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;">Log In</button>
+                <a href="#" class="forgot-link" style="margin-top:16px;">Forgot Password?</a>
+            </form>
+            <div class="divider">OR</div>
+            <button class="btn btn-secondary" style="width:100%;justify-content:center;">Connect Wallet &nbsp;<i class="fas fa-wallet"></i></button>
+            <p class="signup-link">No account? <a href="#" id="create-account-link">Create one</a></p>
+        </div>
+    </div>
+</main>
 
-    <script src="script.js"></script>
+<!-- SIGNUP PAGE -->
+<main id="signup-page" class="page">
+    <div class="signup-card fade-in-up">
+        <h2>Create Account</h2>
+        <div class="subtitle">Join the Platform</div>
+        <form id="signup-form">
+            <div class="form-group"><input type="text" id="signup-name" placeholder="Full Name" required></div>
+            <div class="form-group"><input type="email" id="signup-email" placeholder="Email Address" required></div>
+            <div class="form-group"><input type="password" id="signup-password" placeholder="Password" required></div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;">Create Account</button>
+        </form>
+        <p class="login-link" style="margin-top:20px;text-align:center;">Already a member? <a href="#" id="login-link">Log In</a></p>
+    </div>
+</main>
+
+<!-- LISTING PAGE -->
+<main id="listing-page" class="page" style="flex-direction:column;">
+    <div class="listing-header">
+        <div class="subtitle" style="font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">Tokenized Properties</div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;margin-bottom:32px;">Available for Investment</h2>
+    </div>
+    <div class="main-content-grid">
+        <aside class="filter-sidebar">
+            <h2><i class="fas fa-sliders-h"></i> Filters</h2>
+            <div class="filter-group">
+                <label>Locality</label>
+                <select id="locality-filter" class="filter-input">
+                    <option value="all">All Localities</option>
+                    <option value="Banjara hills">Banjara Hills</option>
+                    <option value="Attapur">Attapur</option>
+                    <option value="Saidabad">Saidabad</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Max Property Value</label>
+                <input type="range" id="price-range-filter" min="10000" max="20000" step="1000" value="20000">
+                <span id="price-value">$10,000 – $20,000+</span>
+            </div>
+            <div class="filter-group">
+                <label>Min. Available Tokens</label>
+                <input type="number" id="tokens-min-filter" class="filter-input" min="1" placeholder="e.g. 500">
+            </div>
+            <button class="btn btn-reset" id="reset-filters-btn">Reset Filters</button>
+        </aside>
+        <section class="property-list-container">
+            <h2>Properties</h2>
+            <div class="property-grid" id="property-grid"></div>
+        </section>
+    </div>
+</main>
+
+<!-- VERIFY TOKEN PAGE -->
+<main id="verify-token-page" class="page" style="justify-content:center;align-items:center;">
+    <div class="verify-container fade-in-up">
+        <h2><i class="fas fa-shield-alt"></i> Verify Token</h2>
+        <p>Enter a Transaction ID or Token Number to verify its status on the blockchain ledger.</p>
+        <input type="text" id="verification-input" placeholder="TXN-9a8c12b4 or PROP-1-0015">
+        <button class="btn btn-primary" id="verify-token-btn" style="width:100%;justify-content:center;padding:14px;">Verify on Blockchain</button>
+        <div id="verification-result" class="result-box"></div>
+    </div>
+</main>
+
+<!-- PURCHASE PAGE -->
+<main id="purchase-page" class="page" style="flex-direction:column;">
+    <div class="purchase-container">
+        <button class="btn btn-back" id="back-to-listings-btn"><i class="fas fa-arrow-left"></i> &nbsp;Back to Listings</button>
+        <div class="property-purchase-grid">
+            <div class="property-details">
+                <div class="image-gallery">
+                    <div class="main-image"><img id="main-property-image" src="" alt="Property"></div>
+                    <div class="thumbnail-images"></div>
+                </div>
+                <div id="property-details-content"></div>
+            </div>
+            <div class="purchase-section">
+                <h3>Complete Purchase</h3>
+                <div class="payment-options">
+                    <h4>Payment Method</h4>
+                    <div class="option"><input type="radio" id="wallet-payment" name="payment" value="wallet"><label for="wallet-payment"><i class="fas fa-wallet"></i> USD Wallet</label></div>
+                    <div id="wallet-payment-details" class="payment-details">
+                        <p>Balance: <span id="wallet-balance-display">$0.00</span></p>
+                        <label>Tokens to Purchase</label>
+                        <input type="range" min="0" max="1000" value="0" class="token-slider" id="wallet-token-slider">
+                        <span id="wallet-token-amount-display">0 Tokens</span>
+                    </div>
+                    <div class="option"><input type="radio" id="upi" name="payment" value="upi"><label for="upi"><i class="fas fa-mobile-alt"></i> UPI</label></div>
+                    <div id="upi-details" class="payment-details">
+                        <input type="text" placeholder="UPI ID (e.g. name@bank)">
+                        <label>Tokens to Purchase</label>
+                        <input type="range" min="0" max="1000" value="0" class="token-slider" id="upi-token-slider">
+                        <span id="upi-token-amount-display">0 Tokens</span>
+                    </div>
+                    <div class="option"><input type="radio" id="debit-card" name="payment" value="debit-card"><label for="debit-card"><i class="far fa-credit-card"></i> Debit Card</label></div>
+                    <div id="debit-card-details" class="payment-details">
+                        <input type="text" placeholder="Card Number">
+                        <input type="text" placeholder="Expiry MM/YY">
+                        <label>Tokens to Purchase</label>
+                        <input type="range" min="0" max="1000" value="0" class="token-slider" id="debit-card-token-slider">
+                        <span id="debit-card-token-amount-display">0 Tokens</span>
+                    </div>
+                    <div class="option"><input type="radio" id="credit-card" name="payment" value="credit-card"><label for="credit-card"><i class="fas fa-credit-card"></i> Credit Card</label></div>
+                    <div id="credit-card-details" class="payment-details">
+                        <input type="text" placeholder="Card Number">
+                        <input type="text" placeholder="Expiry MM/YY">
+                        <label>Tokens to Purchase</label>
+                        <input type="range" min="0" max="1000" value="0" class="token-slider" id="credit-card-token-slider">
+                        <span id="credit-card-token-amount-display">0 Tokens</span>
+                    </div>
+                    <div class="option"><input type="radio" id="nft" name="payment" value="nft"><label for="nft"><i class="fab fa-ethereum"></i> NFT Wallet (StarkNet)</label></div>
+                    <div id="nft-details" class="payment-details">
+                        <label>StarkNet Coins ($0.25 each)</label>
+                        <input type="range" min="0" max="1000" value="0" class="starknet-slider" id="starknet-slider">
+                        <span id="starknet-amount">0 StarkNet</span>
+                    </div>
+                </div>
+                <div class="token-purchase-summary">
+                    <h4>Total Payable</h4>
+                    <span id="usd-to-pay">$0.00</span>
+                </div>
+                <button class="btn btn-primary btn-purchase" id="finalize-purchase-btn">Finalize Purchase</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- WALLET PAGE -->
+<main id="user-wallet-page" class="page" style="flex-direction:column;">
+    <div class="wallet-container">
+        <div class="wallet-eyebrow">Portfolio Overview</div>
+        <h2>My Wallet</h2>
+        <div class="wallet-grid">
+            <div class="wallet-box"><h3>Tokens Held</h3><p id="wallet-tokens">0 TKN</p></div>
+            <div class="wallet-box"><h3>USD Balance</h3><p id="wallet-usd">$0.00</p></div>
+            <div class="wallet-box"><h3>Total Orders</h3><p id="wallet-orders">0</p></div>
+            <div class="wallet-box"><h3>Profit</h3><p id="wallet-profit">$0.00</p></div>
+            <div class="wallet-box full-width"><h3>Current Investments</h3><p id="wallet-investments">No investments yet</p></div>
+        </div>
+        <button class="btn btn-primary" id="add-funds-btn">+ Add Funds</button>
+    </div>
+</main>
+
+<!-- ADD FUNDS MODAL -->
+<div id="add-funds-modal" class="modal" style="display:none;">
+    <div class="modal-content fade-in-up">
+        <button class="close-btn" id="close-modal-btn">&times;</button>
+        <h2>Add Funds</h2>
+        <form id="add-funds-form">
+            <input type="number" id="add-funds-amount" placeholder="Amount in USD" required>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;">Add to Wallet</button>
+        </form>
+    </div>
+</div>
+
+<script>
+// ── GLOBAL STATE ──
+const properties = [
+    { id:1, name:"Banjara Hills Villa", locality:"Banjara hills", type:"Residential Villa", totalValue:20000, tokensTotal:20000, tokensSold:5000, size:"3500 Sqyd", floors:3,
+      images:["https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80&w=1974&auto=format&fit=crop","https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop","https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop"] },
+    { id:2, name:"Attapur Venue Hall", locality:"Attapur", type:"Commercial Hall", totalValue:15000, tokensTotal:15000, tokensSold:10000, size:"10000 Sqyd", floors:1,
+      images:["https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2232&auto=format&fit=crop","https://images.unsplash.com/photo-1549492423-400259a212ce?q=80&w=2070&auto=format&fit=crop"] },
+    { id:3, name:"Saidabad Commercial Shop", locality:"Saidabad", type:"Commercial Retail", totalValue:10000, tokensTotal:10000, tokensSold:800, size:"1000 Sqyd", floors:1,
+      images:["https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=1974&auto=format&fit=crop","https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=2070&auto=format&fit=crop"] }
+];
+let currentProperty=null, users=[], loggedInUser=null;
+const dummyTransactions=[
+    {id:'TXN-9a8c12b4',tokenNumber:'PROP-1-0015',property:'Banjara Hills Villa',ownerWallet:'0x1A2b...C3d4',percentageOwned:'1.5%',status:'Confirmed on Ethereum'},
+    {id:'TXN-f3e76d05',tokenNumber:'PROP-2-0501',property:'Attapur Venue Hall',ownerWallet:'0x5E6f...D7g8',percentageOwned:'5.0%',status:'Confirmed on Polygon'}
+];
+
+// ── NAVBAR SCROLL ──
+window.addEventListener('scroll',()=>{ document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>20); });
+
+// ── PAGE NAVIGATION ──
+function showPage(id) {
+    document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+    const p=document.getElementById(id);
+    if(!p)return;
+    if(id==='login-page'||id==='signup-page') p.style.display='flex';
+    else if(id==='listing-page'){p.style.display='flex';renderProperties(properties);}
+    else if(id==='purchase-page'||id==='user-wallet-page'||id==='verify-token-page') p.style.display='flex';
+    else p.style.display='block';
+    window.scrollTo(0,0);
+}
+
+// ── AUTH ──
+function handleSignUp(e) {
+    e.preventDefault();
+    const name=document.getElementById('signup-name').value,email=document.getElementById('signup-email').value,password=document.getElementById('signup-password').value;
+    if(users.find(u=>u.email===email)){alert('Email already registered.');return;}
+    users.push({name,email,password,wallet:{tokens:0,usd:0,orders:0,profit:0,investments:[]}});
+    alert('Account created! Please log in.');
+    showPage('login-page');
+}
+function handleLogin(e) {
+    e.preventDefault();
+    const email=document.getElementById('login-email').value,password=document.getElementById('login-password').value;
+    const user=users.find(u=>u.email===email&&u.password===password);
+    if(user){loggedInUser=user;updateUIVisibility();updateWalletInfo();showPage('user-wallet-page');}
+    else alert('Invalid credentials.');
+}
+function handleLogout(){loggedInUser=null;updateUIVisibility();showPage('login-page');}
+function updateUIVisibility(){
+    document.getElementById('auth-buttons').style.display=loggedInUser?'none':'flex';
+    document.getElementById('user-pfp').style.display=loggedInUser?'block':'none';
+    document.getElementById('nav-user-wallet').style.display=loggedInUser?'block':'none';
+}
+
+// ── PROPERTIES ──
+function renderProperties(list) {
+    const grid=document.getElementById('property-grid');
+    grid.innerHTML='';
+    if(!list.length){grid.innerHTML='<p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:48px 0;">No properties match your filters.</p>';return;}
+    list.forEach(prop=>{
+        const sold=((prop.tokensSold/prop.tokensTotal)*100).toFixed(1);
+        const avail=(prop.tokensTotal-prop.tokensSold).toLocaleString();
+        grid.insertAdjacentHTML('beforeend',`
+        <div class="property-card fade-in-up" style="animation-delay:${prop.id*0.1}s">
+            <div class="property-card-image">
+                <img src="${prop.images[0]}" alt="${prop.name}" loading="lazy">
+                <div class="property-type-badge">${prop.type}</div>
+            </div>
+            <div class="property-info">
+                <h3>${prop.name}</h3>
+                <div class="property-meta">${prop.locality} &nbsp;·&nbsp; ${prop.size}</div>
+                <span class="price-tag">$${prop.totalValue.toLocaleString()}</span>
+                <div class="availability-bar"><div class="sold-progress" style="width:${sold}%"></div></div>
+                <div class="availability-text"><span>${sold}% Sold</span><span>${avail} Tokens Left</span></div>
+                <button class="btn btn-primary purchase-btn" data-id="${prop.id}">Invest Now &nbsp;→</button>
+            </div>
+        </div>`);
+    });
+    document.querySelectorAll('.purchase-btn').forEach(b=>b.addEventListener('click',e=>showPurchasePage(+e.target.dataset.id)));
+}
+function applyFilters(){
+    const loc=document.getElementById('locality-filter').value;
+    const price=+document.getElementById('price-range-filter').value;
+    const minTok=+document.getElementById('tokens-min-filter').value||0;
+    renderProperties(properties.filter(p=>(loc==='all'||p.locality===loc)&&p.totalValue<=price&&(p.tokensTotal-p.tokensSold)>=minTok));
+}
+function resetFilters(){
+    document.getElementById('locality-filter').value='all';
+    const max=properties.reduce((m,p)=>Math.max(m,p.totalValue),0);
+    document.getElementById('price-range-filter').value=max;
+    document.getElementById('tokens-min-filter').value='';
+    updatePriceLabel(max);applyFilters();
+}
+function updatePriceLabel(v){document.getElementById('price-value').textContent=`$10,000 – $${(+v).toLocaleString()}+`;}
+
+// ── PURCHASE ──
+function showPurchasePage(id){
+    currentProperty=properties.find(p=>p.id===id);
+    if(!currentProperty)return;
+    showPage('purchase-page');
+    resetPaymentForm();
+    if(loggedInUser)document.getElementById('wallet-balance-display').textContent=`$${loggedInUser.wallet.usd.toFixed(2)}`;
+    const avail=currentProperty.tokensTotal-currentProperty.tokensSold;
+    document.querySelectorAll('.token-slider').forEach(s=>s.max=avail);
+    document.getElementById('main-property-image').src=currentProperty.images[0];
+    const thumbs=document.querySelector('.thumbnail-images');
+    thumbs.innerHTML='';
+    currentProperty.images.forEach((src,i)=>{
+        const t=document.createElement('img');t.src=src;t.alt=`View ${i+1}`;t.className='thumbnail'+(i===0?' active':'');
+        t.addEventListener('click',()=>changeImage(src));thumbs.appendChild(t);
+    });
+    document.getElementById('property-details-content').innerHTML=`
+        <h2>${currentProperty.name}</h2>
+        <span class="price-tag">$${currentProperty.totalValue.toLocaleString()}</span>
+        <p><i class="fas fa-map-marker-alt"></i><strong>Location:</strong>${currentProperty.locality}</p>
+        <p><i class="fas fa-building"></i><strong>Type:</strong>${currentProperty.type}</p>
+        <p><i class="fas fa-ruler-combined"></i><strong>Size:</strong>${currentProperty.size}</p>
+        <p><i class="fas fa-layer-group"></i><strong>Floors:</strong>${currentProperty.floors}</p>`;
+}
+function changeImage(src){
+    document.getElementById('main-property-image').src=src;
+    document.querySelectorAll('.thumbnail-images img').forEach(t=>t.classList.toggle('active',t.src===src));
+}
+function resetPaymentForm(){
+    document.querySelectorAll('input[name="payment"]').forEach(r=>r.checked=false);
+    document.querySelectorAll('.payment-details').forEach(d=>d.style.display='none');
+    document.querySelectorAll('.payment-details input[type="text"],.payment-details input[type="number"]').forEach(i=>i.value='');
+    document.querySelectorAll('.token-slider,.starknet-slider').forEach(s=>s.value=0);
+    ['wallet-token-amount-display','upi-token-amount-display','debit-card-token-amount-display','credit-card-token-amount-display'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='0 Tokens';});
+    document.getElementById('starknet-amount').textContent='0 StarkNet';
+    document.getElementById('usd-to-pay').textContent='$0.00';
+}
+function updateTokenPurchase(method,amount){
+    if(!currentProperty)return;
+    const price=currentProperty.totalValue/currentProperty.tokensTotal;
+    let usd=0;
+    if(method==='nft'){usd=amount*.25;document.getElementById('starknet-amount').textContent=`${amount} StarkNet`;}
+    else{usd=amount*price;const el=document.getElementById(`${method}-token-amount-display`);if(el)el.textContent=`${amount} Tokens`;}
+    document.getElementById('usd-to-pay').textContent=`$${(+usd).toFixed(2)}`;
+}
+function handlePurchase(){
+    if(!loggedInUser||!currentProperty){alert('Please log in to purchase.');return;}
+    const pm=document.querySelector('input[name="payment"]:checked');
+    if(!pm){alert('Select a payment method.');return;}
+    const method=pm.value;
+    const price=currentProperty.totalValue/currentProperty.tokensTotal;
+    const sliderId=method==='nft'?'starknet-slider':`${method}-token-slider`;
+    const tokens=parseFloat(document.getElementById(sliderId).value);
+    if(!tokens||tokens<=0){alert('Select a valid number of tokens.');return;}
+    const cost=tokens*price;
+    if(method==='wallet'&&loggedInUser.wallet.usd<cost){alert('Insufficient balance.');return;}
+    if(method==='wallet')loggedInUser.wallet.usd-=cost;
+    loggedInUser.wallet.tokens+=tokens;loggedInUser.wallet.orders+=1;
+    if(!loggedInUser.wallet.investments.includes(currentProperty.name))loggedInUser.wallet.investments.push(currentProperty.name);
+    alert('Purchase successful!');updateWalletInfo();showPage('user-wallet-page');
+}
+
+// ── WALLET ──
+function updateWalletInfo(){
+    if(!loggedInUser)return;
+    document.getElementById('wallet-tokens').textContent=`${loggedInUser.wallet.tokens.toFixed(2)} TKN`;
+    document.getElementById('wallet-usd').textContent=`$${loggedInUser.wallet.usd.toFixed(2)}`;
+    document.getElementById('wallet-orders').textContent=loggedInUser.wallet.orders;
+    document.getElementById('wallet-profit').textContent=`$${loggedInUser.wallet.profit.toFixed(2)}`;
+    document.getElementById('wallet-investments').textContent=loggedInUser.wallet.investments.length?loggedInUser.wallet.investments.join(', '):'No investments yet';
+}
+function handleAddFunds(e){
+    e.preventDefault();
+    const amt=parseFloat(document.getElementById('add-funds-amount').value);
+    if(!amt||amt<=0){alert('Enter a valid amount.');return;}
+    loggedInUser.wallet.usd+=amt;updateWalletInfo();
+    document.getElementById('add-funds-modal').style.display='none';
+}
+
+// ── VERIFY ──
+function verifyToken(){
+    const input=document.getElementById('verification-input').value.trim();
+    const box=document.getElementById('verification-result');
+    box.innerHTML='';
+    if(!input){box.innerHTML='<p style="color:var(--gold);">Please enter a Transaction ID or Token Number.</p>';return;}
+    const tx=dummyTransactions.find(t=>t.id===input||t.tokenNumber===input);
+    if(tx){box.innerHTML=`<p style="color:var(--gold);font-weight:500;margin-bottom:12px;">✓ Verification Successful</p><p><strong>Status:</strong> ${tx.status}</p><p><strong>Property:</strong> ${tx.property}</p><p><strong>Wallet:</strong> ${tx.ownerWallet}</p><p><strong>Ownership:</strong> ${tx.percentageOwned}</p><p style="color:var(--muted);font-size:.75rem;margin-top:8px;">ID: ${tx.id}</p>`;}
+    else{box.innerHTML='<p style="color:#e05d5d;font-weight:500;">✗ Verification Failed</p><p style="margin-top:8px;">No record found on the blockchain ledger.</p>';}
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('signup-form').addEventListener('submit',handleSignUp);
+    document.getElementById('login-form').addEventListener('submit',handleLogin);
+    document.getElementById('logout-btn').addEventListener('click',handleLogout);
+    document.getElementById('create-account-link').addEventListener('click',e=>{e.preventDefault();showPage('signup-page');});
+    document.getElementById('login-link').addEventListener('click',e=>{e.preventDefault();showPage('login-page');});
+    document.getElementById('login-btn').addEventListener('click',()=>showPage('login-page'));
+    document.getElementById('signup-btn').addEventListener('click',()=>showPage('signup-page'));
+    document.getElementById('explore-properties-btn').addEventListener('click',()=>showPage('listing-page'));
+    document.getElementById('nav-properties').addEventListener('click',e=>{e.preventDefault();showPage('listing-page');});
+    document.getElementById('nav-verify').addEventListener('click',e=>{e.preventDefault();showPage('verify-token-page');});
+    document.getElementById('nav-user-wallet').addEventListener('click',e=>{e.preventDefault();showPage('user-wallet-page');});
+    document.getElementById('reset-filters-btn').addEventListener('click',resetFilters);
+    document.getElementById('verify-token-btn').addEventListener('click',verifyToken);
+    document.getElementById('back-to-listings-btn').addEventListener('click',()=>showPage('listing-page'));
+    document.getElementById('locality-filter').addEventListener('change',applyFilters);
+    document.getElementById('price-range-filter').addEventListener('input',e=>{updatePriceLabel(e.target.value);applyFilters();});
+    document.getElementById('tokens-min-filter').addEventListener('input',applyFilters);
+    document.querySelectorAll('input[name="payment"]').forEach(r=>r.addEventListener('change',e=>{
+        document.querySelectorAll('.payment-details').forEach(d=>d.style.display='none');
+        document.getElementById(`${e.target.value}-details`).style.display='block';
+    }));
+    document.getElementById('starknet-slider').addEventListener('input',e=>updateTokenPurchase('nft',e.target.value));
+    document.getElementById('wallet-token-slider').addEventListener('input',e=>updateTokenPurchase('wallet',e.target.value));
+    document.getElementById('upi-token-slider').addEventListener('input',e=>updateTokenPurchase('upi',e.target.value));
+    document.getElementById('debit-card-token-slider').addEventListener('input',e=>updateTokenPurchase('debit-card',e.target.value));
+    document.getElementById('credit-card-token-slider').addEventListener('input',e=>updateTokenPurchase('credit-card',e.target.value));
+    document.getElementById('finalize-purchase-btn').addEventListener('click',handlePurchase);
+    document.getElementById('add-funds-btn').addEventListener('click',()=>document.getElementById('add-funds-modal').style.display='flex');
+    document.getElementById('close-modal-btn').addEventListener('click',()=>document.getElementById('add-funds-modal').style.display='none');
+    document.getElementById('add-funds-form').addEventListener('submit',handleAddFunds);
+    const max=properties.reduce((m,p)=>Math.max(m,p.totalValue),0);
+    const pr=document.getElementById('price-range-filter');pr.max=max;pr.value=max;updatePriceLabel(max);
+    renderProperties(properties);
+    showPage('login-page');
+});
+</script>
 </body>
 </html>
