@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptic Estate | Fractional Real Estate on Blockchain</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">
+            <i class="fas fa-cubes logo-icon"></i> Cryptic Estate
+        </div>
+        <nav>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#properties" id="nav-properties">Properties</a>
+            <a href="#faqs">FAQs</a>
+            <a href="#user-wallet" id="nav-user-wallet" style="display: none;">My Wallet</a>
+        </nav>
+        <div class="auth-buttons" id="auth-buttons">
+            <button class="btn btn-login" id="login-btn">Login</button>
+            <button class="btn btn-primary" id="signup-btn">Sign Up</button>
+        </div>
+        <div class="user-pfp" id="user-pfp" style="display: none;">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D" alt="User PFP">
+            <div class="pfp-dropdown" id="pfp-dropdown">
+                <a href="#" id="logout-btn">Log Out</a>
+            </div>
+        </div>
+    </header>
+
+    <main id="login-page" class="page active" style="display: flex;">
+        <div class="hero-content">
+            <h1 class="fade-in-up">Fractional Real Estate investment Secured by Blockchain.</h1>
+            <p class="fade-in-up delay-1">Own a piece of premium property starting from just 1%. Verifiable, Liquid, and Accessible.</p>
+            <button class="btn btn-hero btn-primary fade-in-up delay-2" id="explore-properties-btn">Explore Properties</button>
+        </div>
+
+        <div class="login-container fade-in-up delay-3">
+            <h2>Access Your Portfolio</h2>
+            <form id="login-form">
+                <input type="email" id="login-email" placeholder="Email Address" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit" class="btn btn-primary">Log In</button>
+                <a href="#" class="forgot-link">Forgot Password?</a>
+            </form>
+            <div class="divider">OR</div>
+            <button class="btn btn-secondary">Connect Wallet <i class="fas fa-wallet"></i></button>
+            <p class="signup-link">Don't have an account? <a href="#" id="create-account-link">Create one</a></p>
+        </div>
+    </main>
+
+    <main id="signup-page" class="page" style="display: none;">
+        <div class="signup-container">
+            <h2>Create Your Account</h2>
+            <form id="signup-form">
+                <input type="text" id="signup-name" placeholder="Full Name" required>
+                <input type="email" id="signup-email" placeholder="Email Address" required>
+                <input type="password" id="signup-password" placeholder="Password" required>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+            </form>
+            <p class="login-link">Already have an account? <a href="#" id="login-link">Log In</a></p>
+        </div>
+    </main>
+
+    <main id="listing-page" class="page" style="display: none;">
+        <div class="main-content-grid">
+            
+            <aside class="filter-sidebar">
+                <h2><i class="fas fa-sliders-h"></i> Filters</h2>
+
+                <div class="filter-group">
+                    <label>Locality</label>
+                    <select id="locality-filter" class="filter-input">
+                        <option value="all">All Localities</option>
+                        <option value="Banjara hills">Banjara Hills</option>
+                        <option value="Attapur">Attapur</option>
+                        <option value="Saidabad">Saidabad</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Price Range (Total Property Value)</label>
+                    <input type="range" id="price-range-filter" min="10000" max="20000" step="1000" value="20000">
+                    <span id="price-value">$10,000 - $20,000+</span>
+                </div>
+
+                <div class="filter-group">
+                    <label>Min. Available Tokens/Coins</label>
+                    <input type="number" id="tokens-min-filter" class="filter-input" min="1" placeholder="Min. Tokens">
+                </div>
+
+                <button class="btn btn-reset" id="reset-filters-btn">Reset Filters</button>
+            </aside>
+
+            <section class="property-list-container">
+                <h2>Available Properties to Tokenize</h2>
+                <div class="property-grid" id="property-grid">
+                    </div>
+            </section>
+        </div>
+    </main>
+
+    <main id="verify-token-page" class="page" style="display: none; padding: 40px; text-align: center;">
+        <div class="verify-container">
+            <h2><i class="fas fa-check-circle"></i> Verify Token/Transaction</h2>
+            <p>Enter the Unique Transaction ID or Token Number to verify its status on the blockchain.</p>
+            <input type="text" id="verification-input" placeholder="Enter Transaction ID or Token Number">
+            <button class="btn btn-primary" id="verify-token-btn">Verify Token</button>
+            <div id="verification-result" class="result-box"></div>
+        </div>
+    </main>
+
+    <main id="purchase-page" class="page" style="display: none;">
+        <div class="purchase-container">
+            <button class="btn btn-back" id="back-to-listings-btn"><i class="fas fa-arrow-left"></i> Back to Listings</button>
+            <div class="property-purchase-grid">
+                <div class="property-details">
+                    <div class="image-gallery">
+                        <div class="main-image">
+                            <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Property Image 1" id="main-property-image">
+                        </div>
+                        <div class="thumbnail-images">
+                            <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Thumbnail 1" class="thumbnail active">
+                            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Thumbnail 2" class="thumbnail">
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Thumbnail 3" class="thumbnail">
+                        </div>
+                    </div>
+                    <div id="property-details-content">
+                        <!-- Property details will be injected here by JS -->
+                    </div>
+                </div>
+                <div class="purchase-section">
+                    <h3>Complete Your Purchase</h3>
+                    <div class="payment-options">
+                        <h4>Select Payment Method</h4>
+                        <div class="option">
+                            <input type="radio" id="wallet-payment" name="payment" value="wallet">
+                            <label for="wallet-payment"><i class="fas fa-wallet"></i> USD in Wallet</label>
+                        </div>
+                        <div id="wallet-payment-details" class="payment-details">
+                            <p>Available Balance: <span id="wallet-balance-display">$0.00</span></p>
+                            <label>Number of Tokens:</label>
+                            <input type="range" min="0" max="1000" value="0" class="token-slider" id="wallet-token-slider">
+                            <span id="wallet-token-amount-display">0 Tokens</span>
+                        </div>
+
+                        <div class="option">
+                            <input type="radio" id="upi" name="payment" value="upi">
+                            <label for="upi"><i class="fas fa-mobile-alt"></i> UPI</label>
+                        </div>
+                        <div id="upi-details" class="payment-details">
+                            <input type="text" placeholder="Enter UPI ID (e.g., yourname@bank)">
+                            <label>Number of Tokens:</label>
+                            <input type="range" min="0" max="1000" value="0" class="token-slider" id="upi-token-slider">
+                            <span id="upi-token-amount-display">0 Tokens</span>
+                        </div>
+
+                        <div class="option">
+                            <input type="radio" id="debit-card" name="payment" value="debit-card">
+                            <label for="debit-card"><i class="far fa-credit-card"></i> Debit Card</label>
+                        </div>
+                        <div id="debit-card-details" class="payment-details">
+                            <input type="text" placeholder="Card Number (12 Digits)">
+                            <input type="text" placeholder="Expiry Date (MM/YY)">
+                            <label>Number of Tokens:</label>
+                            <input type="range" min="0" max="1000" value="0" class="token-slider" id="debit-card-token-slider">
+                            <span id="debit-card-token-amount-display">0 Tokens</span>
+                        </div>
+
+                        <div class="option">
+                            <input type="radio" id="credit-card" name="payment" value="credit-card">
+                            <label for="credit-card"><i class="fas fa-credit-card"></i> Credit Card</label>
+                        </div>
+                        <div id="credit-card-details" class="payment-details">
+                            <input type="text" placeholder="Card Number (12 Digits)">
+                            <input type="text" placeholder="Expiry Date (MM/YY)">
+                            <label>Number of Tokens:</label>
+                            <input type="range" min="0" max="1000" value="0" class="token-slider" id="credit-card-token-slider">
+                            <span id="credit-card-token-amount-display">0 Tokens</span>
+                        </div>
+
+                        <div class="option">
+                            <input type="radio" id="nft" name="payment" value="nft">
+                            <label for="nft"><i class="fab fa-ethereum"></i> NFT Wallet (StarkNet)</label>
+                        </div>
+                        <div id="nft-details" class="payment-details">
+                            <label>StarkNet Coins ($0.25 each)</label>
+                            <input type="range" min="0" max="1000" value="0" class="starknet-slider" id="starknet-slider">
+                            <span id="starknet-amount">0 StarkNet</span>
+                        </div>
+                    </div>
+                    <div class="token-purchase-summary">
+                        <h4>You will pay:</h4>
+                        <span id="usd-to-pay">$0.00</span>
+                    </div>
+                    <button class="btn btn-primary btn-purchase" id="finalize-purchase-btn">Finalize Purchase</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <main id="user-wallet-page" class="page" style="display: none;">
+        <div class="wallet-container">
+            <h2>My Wallet</h2>
+            <div class="wallet-grid">
+                <div class="wallet-box">
+                    <h3>Tokens Available</h3>
+                    <p id="wallet-tokens">0 TKN</p>
+                </div>
+                <div class="wallet-box">
+                    <h3>USD in Wallet</h3>
+                    <p id="wallet-usd">$0.00</p>
+                </div>
+                <div class="wallet-box">
+                    <h3>Past Orders</h3>
+                    <p id="wallet-orders">0 Orders</p>
+                </div>
+                <div class="wallet-box">
+                    <h3>Profit</h3>
+                    <p id="wallet-profit">$0.00</p>
+                </div>
+                <div class="wallet-box full-width">
+                    <h3>Current Investments</h3>
+                    <p id="wallet-investments">Not invested yet</p>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="add-funds-btn">Add Funds</button>
+        </div>
+    </main>
+
+    <div id="add-funds-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal-btn">&times;</span>
+            <h2>Add Funds to Your Wallet</h2>
+            <form id="add-funds-form">
+                <input type="number" id="add-funds-amount" placeholder="Amount in USD" required>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
